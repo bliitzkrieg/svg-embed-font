@@ -131,7 +131,13 @@ func Embed(fm FontMap, svg []byte) ([]byte, error) {
 	if err := t.Execute(buf, doc); err != nil {
 		return svg, err
 	}
-	svgEmbed := strings.Replace(string(svg), "</defs>", buf.String(), 1)
+	
+	svgString := string(svg);
+	if !strings.Contains(svgString, "<defs>") {
+		svgString = strings.Replace(svgString, "</svg>", "<defs></defs></svg>", -1)
+	}
+
+	svgEmbed := strings.Replace(svgString, "</defs>", buf.String(), 1)
 	return []byte(svgEmbed), nil
 }
 

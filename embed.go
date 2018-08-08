@@ -125,13 +125,21 @@ func Embed(fm FontMap, svg []byte) ([]byte, error) {
 	for family := range fm {
 		doc.Add(fm[family])
 	}
+
 	t := template.Must(template.New("embed").Parse(embedTemplate))
 
 	buf := new(bytes.Buffer)
 	if err := t.Execute(buf, doc); err != nil {
 		return svg, err
 	}
-	svgEmbed := strings.Replace(string(svg), "</defs>", buf.String(), 1)
+
+	svgEmbed := string(svg)
+	hasDefs := strings.Contains(string(svg), "</defs>")
+	if !hasDefs {
+		svgEmbed = strings.Replace(string(svg), "</svg>", "<defs></defs></svg>", 1)
+	}
+
+	svgEmbed = strings.Replace(svgEmbed, "</defs>", buf.String(), 1)
 	return []byte(svgEmbed), nil
 }
 

@@ -125,6 +125,7 @@ func Embed(fm FontMap, svg []byte) ([]byte, error) {
 	for family := range fm {
 		doc.Add(fm[family])
 	}
+
 	t := template.Must(template.New("embed").Parse(embedTemplate))
 
 	buf := new(bytes.Buffer)

@@ -41,7 +41,7 @@ type FontMap map[string]Font
 // the font and embed it in the SVG file.
 func FindEmbedFonts(svg []byte, dir string) ([]byte, error) {
 	fonts := make(FontMap)
-	re := regexp.MustCompile("font-family:(.*?)[.(;|\"|,)]")
+	re := regexp.MustCompile("font-family:(.*?)[(;|\"|,]")
 	matches := re.FindAllStringSubmatch(string(svg), -1)
 	for _, match := range matches {
 		name := strings.Trim(match[1], " '\"\t\n\r")
@@ -131,8 +131,8 @@ func Embed(fm FontMap, svg []byte) ([]byte, error) {
 	if err := t.Execute(buf, doc); err != nil {
 		return svg, err
 	}
-	
-	svgString := string(svg);
+
+	svgString := string(svg)
 	if !strings.Contains(svgString, "<defs>") {
 		svgString = strings.Replace(svgString, "</svg>", "<defs></defs></svg>", -1)
 	}
